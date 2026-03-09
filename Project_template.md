@@ -408,6 +408,14 @@ minikube tunnel
 <https://cinemaabyss.example.com/api/movies>
 и приложите скриншот развертывания helm и вывода <https://cinemaabyss.example.com/api/movies>
 
+Скриншот успешного развертывания через helm:
+
+![Helm deploy](tasks/task4/helm_deploy.png)
+
+Вывод <https://cinemaabyss.example.com/api/movies> после helm-установки:
+
+![API Movies response after helm deploy](tasks/task4/ingress_request_after_helm.png)
+
 ## Удаляем все
 
 ```bash
