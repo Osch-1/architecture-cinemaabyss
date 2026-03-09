@@ -5,7 +5,7 @@
 1. Спроектируйте to be архитектуру КиноБездны, разделив всю систему на отдельные домены и организовав интеграционное взаимодействие и единую точку вызова сервисов.
 Результат представьте в виде контейнерной диаграммы в нотации С4.
 Добавьте ссылку на файл в этот шаблон
-[C4 Container Diagram — To-Be Architecture](cinema-tobe.puml)
+[C4 Container Diagram — To-Be Architecture](tasks/task1/cinema-tobe.puml)
 [Посмотреть здесь](https://www.planttext.com/)
 
 # Задание 2
@@ -62,6 +62,14 @@
 
 Необходимые тесты для проверки этого API вызываются при запуске npm run test:local из папки tests/postman
 Приложите скриншот тестов и скриншот состояния топиков Kafka из UI <http://localhost:8090>
+
+### Скриншот результатов тестов
+
+![Newman test results](tasks/task2/newman-test-results.png)
+
+### Скриншот состояния топиков Kafka
+
+![Kafka topics](tasks/task2/kafka-topics.png)
 
 # Задание 3
 
