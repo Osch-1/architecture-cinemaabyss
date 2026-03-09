@@ -318,7 +318,13 @@ cat .docker/config.json | base64
 
 #### Шаг 3
 
-Добавьте сюда скриншота вывода при вызове <https://cinemaabyss.example.com/api/movies> и  скриншот вывода event-service после вызова тестов.
+Вывод при вызове <https://cinemaabyss.example.com/api/movies>:
+
+![API Movies response](tasks/task3/ingress_request_result.png)
+
+Вывод event-service после вызова тестов (Produced/Consumed события):
+
+![Event service logs](tasks/task3/consume_verification.png)
 
 # Задание 4
 
