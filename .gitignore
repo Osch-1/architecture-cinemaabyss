@@ -39,6 +39,51 @@ vendor/
 *.sublime-workspace
 *.sublime-project
 
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# Claude Code
+.claude/
+
+# .NET / C# build artifacts
+obj/
+*.dll
+*.pdb
+*.nupkg
+*.snupkg
+*.ilk
+*.meta
+*.exp
+*.lib
+
+# .NET publish output
+publish/
+[Pp]ublish/
+
+# MSBuild
+*.cache
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+nuget.config
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Rider
+.idea/
+
 # Docker
 .docker/
 docker-compose.override.yml

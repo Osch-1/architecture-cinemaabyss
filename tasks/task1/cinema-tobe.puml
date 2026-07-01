@@ -1,0 +1,82 @@
+@startuml cinema-tobe
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title КиноБездна — To-Be Architecture\nC4 Container Diagram
+
+' ─────────────────────────────────────────────
+' External users
+' ─────────────────────────────────────────────
+Person(user_web,     "Пользователь",  "Веб-браузер")
+Person(user_mobile,  "Пользователь",  "Мобильное приложение (iOS/Android)")
+Person(user_tv,      "Пользователь",  "Smart TV")
+
+' ─────────────────────────────────────────────
+' External systems
+' ─────────────────────────────────────────────
+System_Ext(rec_system,  "Рекомендательная система", "Сторонняя ML-система формирования подборок фильмов")
+System_Ext(pay_gateway, "Платёжный шлюз",            "Внешний процессинг платёжных транзакций")
+
+' ─────────────────────────────────────────────
+' CinemaAbyss Platform (Kubernetes Cluster)
+' ─────────────────────────────────────────────
+System_Boundary(cinemaabyss, "КиноБездна Platform [Kubernetes Cluster]") {
+
+    ' Entry point
+    Container(api_gateway, "API Gateway", "Go / Proxy Service\nport 8000", "Единая точка входа. Маршрутизация трафика по feature-flag (Strangler Fig). TLS termination.")
+
+    ' Microservices
+    Container(svc_auth,          "Auth Service",         "Go / REST API",          "Аутентификация, выдача JWT-токенов, управление пользователями")
+    Container(svc_movies,        "Movies Service",       "Go / REST API\nport 8081","Метаданные фильмов, жанры, актёры, пользовательские рейтинги")
+    Container(svc_subscriptions, "Subscription Service", "Go / REST API",           "Тарифные планы, подписки, скидки")
+    Container(svc_payment,       "Payment Service",      "Go / REST API",           "Обработка платежей, история транзакций")
+    Container(svc_events,        "Events Service",       "Go / REST API\nport 8082","Kafka producer/consumer. События: User, Movie, Payment")
+
+    ' Databases
+    ContainerDb(db_users,   "users_db",   "PostgreSQL", "Пользователи, сессии, учётные данные")
+    ContainerDb(db_movies,  "movies_db",  "PostgreSQL", "Фильмы, жанры, актёры, рейтинги")
+    ContainerDb(db_billing, "billing_db", "PostgreSQL", "Платежи, подписки, скидки")
+
+    ' Message broker
+    Container(kafka, "Apache Kafka", "Message Broker", "Топики: movie-events, user-events, payment-events")
+}
+
+' ─────────────────────────────────────────────
+' Relations — clients → API Gateway
+' ─────────────────────────────────────────────
+Rel(user_web,    api_gateway, "HTTPS")
+Rel(user_mobile, api_gateway, "HTTPS")
+Rel(user_tv,     api_gateway, "HTTPS")
+
+' ─────────────────────────────────────────────
+' Relations — API Gateway → microservices
+' ─────────────────────────────────────────────
+Rel(api_gateway, svc_auth,          "REST  /api/auth")
+Rel(api_gateway, svc_movies,        "REST  /api/movies")
+Rel(api_gateway, svc_subscriptions, "REST  /api/subscriptions")
+Rel(api_gateway, svc_payment,       "REST  /api/payments")
+Rel(api_gateway, svc_events,        "REST  /api/events")
+
+' ─────────────────────────────────────────────
+' Relations — microservices → databases
+' ─────────────────────────────────────────────
+Rel(svc_auth,          db_users,   "SQL / TCP")
+Rel(svc_movies,        db_movies,  "SQL / TCP")
+Rel(svc_subscriptions, db_billing, "SQL / TCP")
+Rel(svc_payment,       db_billing, "SQL / TCP")
+
+' ─────────────────────────────────────────────
+' Relations — microservices → Kafka
+' ─────────────────────────────────────────────
+Rel(svc_auth,    kafka, "produce: user-events",    "async")
+Rel(svc_payment, kafka, "produce: payment-events", "async")
+Rel(svc_events,  kafka, "produce & consume",       "async")
+
+' ─────────────────────────────────────────────
+' Relations — external
+' ─────────────────────────────────────────────
+Rel(svc_events,  rec_system,  "async events via Kafka")
+Rel(svc_payment, pay_gateway, "HTTPS API")
+
+@enduml
